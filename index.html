@@ -15,9 +15,14 @@
         .linha { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; }
         input[type=range] { flex: 1; accent-color: #FFD700; }
         #teclado { height: 72%; width: 100%; display: flex; overflow-x: auto; touch-action: none; background: #000; padding-top: 10px; }
-        .tecla { flex-shrink: 0; position: relative; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; user-select: none; border: 1px solid #999; transition: transform .05s; cursor: pointer; overflow: hidden; }
+        .tecla { flex-shrink: 0; position: relative; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; user-select: none; border: 1px solid #999; transition: transform .05s, background .05s; cursor: pointer; overflow: hidden; }
         .branca { width: 70px; height: 100%; background: #fff; color: #333; z-index: 1; }
         .preta { width: 45px; height: 60%; background: #222; color: #fff; margin-left: -22.5px; margin-right: -22.5px; z-index: 2; border: 1px solid #000; }
+        
+        /* AS CORES QUE TINHAM SUMIDO VOLTARAM AQUI */
+        .tecla-ativa-branca { background: #ccc !important; transform: translateY(4px); }
+        .tecla-ativa-preta { background: #000 !important; transform: translateY(4px); }
+        
         .progresso-nota { position: absolute; bottom: 0; left: 0; width: 100%; background: #FFD700; height: 0%; z-index: 0; opacity: .8; pointer-events: none; }
         .alvo-amarelo { border: 3px solid #FFD700 !important; box-shadow: 0 0 15px #FFD700; }
         .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; color: #fff; }
@@ -128,19 +133,31 @@ function prox() {
         else { document.getElementById('k'+n).classList.add('alvo-amarelo'); }
     }
 }
+
 function hStart(id, f) {
     init(); som(f * document.getElementById('pitch').value, id);
+    // ADICIONADO: A tecla agora muda de cor visualmente
+    const t = document.getElementById(id);
+    const isPreta = nms[parseInt(id.slice(1)) % 12].includes('#');
+    t.classList.add(isPreta ? 'tecla-ativa-preta' : 'tecla-ativa-branca');
+
     if(mus && id === 'k' + mus.seq[passo][0]) {
         segurando = true;
-        let p = document.getElementById(id).querySelector('.progresso-nota');
+        let p = t.querySelector('.progresso-nota');
         p.style.transition = 'none'; p.style.height = '0%';
         setTimeout(() => { if(segurando) { p.style.transition = `height ${mus.seq[passo][1]}ms linear`; p.style.height = '100%'; } }, 50); 
     }
 }
+
 function hEnd(id) {
     off(id);
+    // REMOVE A COR DE TOQUE
+    const t = document.getElementById(id);
+    t.classList.remove('tecla-ativa-preta', 'tecla-ativa-branca');
+    
     if(mus && segurando && id === 'k' + mus.seq[passo][0]) { segurando = false; passo++; prox(); }
 }
+
 const tcl = document.getElementById('teclado');
 for(let i = 0; i < 25; i++) {
     let d = document.createElement('div'), f = 130.81 * Math.pow(2, i/12), id = 'k' + i;
@@ -163,7 +180,7 @@ function som(f, id) {
 function off(id) {
     let n = notas.get(id);
     if(n) { 
-        n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4); // Efeito Reverb/Sustain
+        n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4); 
         n.o.stop(ctx.currentTime + 0.45); 
         notas.delete(id); 
     }
