@@ -39,7 +39,7 @@
         <div id="painel">
             <div class="linha">
                 <button class="btn" style="background:#f44336;" onclick="irMenu()">SAIR</button>
-                <div style="text-align:center;"><b id="txt-m">Livre</b></div>
+                <div style="text-align:center;"><b id="txt-m">Livre</b><br><small id="cont-n" style="color:#FFD700; font-weight:bold;"></small></div>
                 <button id="btn-rec" class="btn" style="background:#555;" onclick="toggleRec()">⏺ GRAVAR</button>
             </div>
             <div class="linha">
@@ -63,7 +63,9 @@
     const banco = [
         { id: 1, nome: "Happy Birthday", seq: [[0, 300], [0, 300], [2, 800], [0, 800], [5, 800], [4, 1200], [0, 300], [0, 300], [2, 800], [0, 800], [7, 800], [5, 1200], [0, 300], [0, 300], [12, 800], [9, 800], [5, 800], [4, 800], [2, 1000], [10, 300], [10, 300], [9, 800], [5, 800], [7, 800], [5, 1500]] },
         { id: 2, nome: "Baby Shark", seq: [[7, 400], [9, 400], [12, 200], [12, 200], [12, 200], [12, 100], [12, 100], [12, 100], [7, 400], [9, 400], [12, 200], [12, 200], [12, 200], [12, 100], [12, 100], [12, 100], [7, 400], [9, 400], [12, 200], [12, 200], [12, 200], [12, 100], [12, 100], [12, 100], [12, 400], [12, 400], [11, 1000]] },
-        { id: 3, nome: "Bate o Sino", seq: [[4, 400], [4, 400], [4, 800], [4, 400], [4, 400], [4, 800], [4, 400], [7, 400], [0, 400], [2, 400], [4, 1200], [5, 400], [5, 400], [5, 400], [5, 400], [5, 400], [4, 400], [4, 400], [4, 200], [4, 200], [4, 400], [2, 400], [2, 400], [4, 400], [2, 800], [7, 800], [4, 400], [4, 400], [4, 800], [4, 400], [4, 400], [4, 800], [4, 400], [7, 400], [0, 400], [2, 400], [4, 1200], [5, 400], [5, 400], [5, 400], [5, 400], [5, 400], [4, 400], [4, 400], [7, 400], [7, 400], [5, 400], [2, 400], [0, 1500]] }
+        { id: 3, nome: "Bate o Sino", seq: [[4, 400], [4, 400], [4, 800], [4, 400], [4, 400], [4, 800], [4, 400], [7, 400], [0, 400], [2, 400], [4, 1200], [5, 400], [5, 400], [5, 400], [5, 400], [5, 400], [4, 400], [4, 400], [4, 200], [4, 200], [4, 400], [2, 400], [2, 400], [4, 400], [2, 800], [7, 800], [4, 400], [4, 400], [4, 800], [4, 400], [4, 400], [4, 800], [4, 400], [7, 400], [0, 400], [2, 400], [4, 1200], [5, 400], [5, 400], [5, 400], [5, 400], [5, 400], [4, 400], [4, 400], [7, 400], [7, 400], [5, 400], [2, 400], [0, 1500]] },
+        { id: 4, nome: "Despacito", seq: [[14, 600], [9, 600], [5, 300], [7, 300], [9, 300], [10, 300], [12, 300], [14, 300], [10, 600], [10, 300], [10, 300], [10, 300], [10, 300], [14, 300], [14, 300], [14, 300], [14, 300], [15, 300], [14, 300], [12, 300], [10, 600], [7, 600], [14, 600], [9, 600], [5, 300], [7, 300], [9, 300], [10, 300], [12, 300], [14, 300], [10, 800]] },
+        { id: 5, nome: "Piratas do Caribe", seq: [[9, 200], [12, 200], [14, 200], [14, 400], [14, 200], [15, 200], [17, 200], [17, 400], [17, 200], [19, 200], [15, 200], [15, 400], [14, 200], [12, 200], [12, 200], [14, 600], [9, 200], [12, 200], [14, 200], [14, 400], [14, 200], [15, 200], [17, 200], [17, 400], [17, 200], [19, 200], [15, 200], [15, 400], [14, 200], [12, 200], [14, 800]] }
     ];
 
     function init() {
@@ -83,7 +85,7 @@
 
     function toggleRec() { init(); const btn = document.getElementById('btn-rec'); if(rec.state === 'inactive') { chunks = []; rec.start(); btn.innerText = "⏹ PARAR"; btn.style.background = "#f44336"; } else { rec.stop(); btn.innerText = "⏺ GRAVAR"; btn.style.background = "#555"; } }
     function irMenu() { clearInterval(loopProg); clearInterval(tTimer); document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('m-p').classList.add('ativa'); }
-    function irJogo() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); init(); mus = null; document.getElementById('txt-m').innerText = "Livre"; clearInterval(tTimer); document.getElementById('timer').innerText = "00:00"; document.querySelectorAll('.tecla').forEach(t => t.classList.remove('alvo-amarelo')); }
+    function irJogo() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); init(); mus = null; document.getElementById('txt-m').innerText = "Livre"; document.getElementById('cont-n').innerText = ""; clearInterval(tTimer); document.getElementById('timer').innerText = "00:00"; document.querySelectorAll('.tecla').forEach(t => t.classList.remove('alvo-amarelo')); }
     function irMus() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-m').classList.add('ativa'); const lista = document.getElementById('lista-m'); lista.innerHTML = ''; banco.forEach(m => { lista.innerHTML += `<div class="item-musica"><span>${m.nome}</span> <button class="btn" style="background:#FFD700; color:#000;" onclick="playM(${m.id})">TOCAR</button></div>`; }); }
 
     function playM(id) {
@@ -102,35 +104,30 @@
             if(t.querySelector('.progress-bar')) t.querySelector('.progress-bar').style.height = '0%'; 
         });
         if(mus && passo >= mus.seq.length) {
-            let nomeFinal = mus.nome;
-            mus = null; // Libera o modo livre antes do alerta
-            document.getElementById('txt-m').innerText = "Livre";
-            clearInterval(tTimer);
-            // Pequeno delay para o som final acabar suavemente sem estalo
-            setTimeout(() => alert("Música Completa: " + nomeFinal + "!"), 150);
-            return;
+            let nF = mus.nome; mus = null; document.getElementById('txt-m').innerText = "Livre"; document.getElementById('cont-n').innerText = "";
+            clearInterval(tTimer); setTimeout(() => alert("Música Completa: " + nF + "!"), 150); return;
         }
-        if(mus) document.getElementById('k'+mus.seq[passo][0]).classList.add('alvo-amarelo');
+        if(mus) {
+            document.getElementById('k'+mus.seq[passo][0]).classList.add('alvo-amarelo');
+            document.getElementById('cont-n').innerText = `Nota: ${passo + 1} / ${mus.seq.length}`;
+        }
     }
 
     function handleStart(id, freq) {
-        init();
-        let f = freq * document.getElementById('pitch').value;
-        som(f, id);
+        init(); let f = freq * document.getElementById('pitch').value; som(f, id);
         if(mus && id === 'k'+mus.seq[passo][0]) {
-            segurando = true; prog = 0;
-            if(loopProg) clearInterval(loopProg);
+            segurando = true; prog = 0; if(loopProg) clearInterval(loopProg);
             loopProg = setInterval(() => {
                 prog += 50; let p = (prog / mus.seq[passo][1]) * 100;
-                let el = document.getElementById(id);
-                if(el && el.querySelector('.progress-bar')) el.querySelector('.progress-bar').style.height = Math.min(p, 100) + '%';
-                if(prog >= mus.seq[passo][1]) { clearInterval(loopProg); if(segurando) { passo++; prox(); } }
+                let el = document.getElementById(id); if(el && el.querySelector('.progress-bar')) el.querySelector('.progress-bar').style.height = Math.min(p, 100) + '%';
+                if(prog >= mus.seq[passo][1]) { clearInterval(loopProg); }
             }, 50);
         }
     }
 
     function handleEnd(id) {
-        off(id); segurando = false; if(loopProg) clearInterval(loopProg);
+        off(id); if(mus && segurando && id === 'k'+mus.seq[passo][0]) { passo++; prox(); }
+        segurando = false; if(loopProg) clearInterval(loopProg);
         let el = document.getElementById(id); if(el && el.querySelector('.progress-bar')) el.querySelector('.progress-bar').style.height = '0%';
     }
 
@@ -147,26 +144,17 @@
     }
 
     function som(f, id) { 
-        if(!ctx || notas.has(id)) return; 
-        document.getElementById(id).style.filter = "brightness(0.7)"; 
-        let o=ctx.createOscillator(), g=ctx.createGain(); 
-        o.type='triangle'; o.frequency.value=f; 
-        g.gain.setValueAtTime(0, ctx.currentTime); 
-        g.gain.linearRampToValueAtTime(0.4, ctx.currentTime+0.02); 
-        o.connect(g); g.connect(mG); o.start(); 
-        notas.set(id, {o, g}); 
+        if(!ctx || notas.has(id)) return; document.getElementById(id).style.filter = "brightness(0.7)"; 
+        let o=ctx.createOscillator(), g=ctx.createGain(); o.type='triangle'; o.frequency.value=f; 
+        g.gain.setValueAtTime(0, ctx.currentTime); g.gain.linearRampToValueAtTime(0.4, ctx.currentTime+0.02); 
+        o.connect(g); g.connect(mG); o.start(); notas.set(id, {o, g}); 
     }
 
     function off(id) { 
-        let n=notas.get(id); 
-        if(n) { 
-            let el = document.getElementById(id); if(el) el.style.filter = "none"; 
-            n.g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.1); 
-            n.o.stop(ctx.currentTime + 0.15); 
-            notas.delete(id); 
-        } 
+        let n=notas.get(id); if(n) { let el = document.getElementById(id); if(el) el.style.filter = "none"; 
+        n.g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.1); n.o.stop(ctx.currentTime + 0.15); notas.delete(id); } 
     }
 </script>
 </body>
-    </html>
-    
+                    </html>
+                
