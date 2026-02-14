@@ -6,69 +6,67 @@
     <title>Virtual Piano+ Pro Edition</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body, html { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; }
+        body, html { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; }
         
         /* Telas */
         .tela { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: #111; z-index: 10; padding: 20px; }
         .ativa { display: flex; }
         
-        /* Painel de Controle */
+        /* Painel */
         #painel { height: 25%; width: 100%; background: #1a1a1a; display: flex; flex-direction: column; justify-content: space-around; padding: 10px; border-bottom: 2px solid #333; }
         .linha { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; }
         input[type=range] { flex: 1; accent-color: #FFD700; }
         
         /* Teclado */
         #teclado { height: 75%; width: 100%; display: flex; overflow-x: auto; touch-action: none; background: #000; }
-        .tecla { flex-shrink: 0; position: relative; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; user-select: none; border: 1px solid #999; transition: filter 0.1s; }
+        .tecla { flex-shrink: 0; position: relative; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; user-select: none; border: 1px solid #999; }
         .branca { width: 70px; height: 100%; background: white; color: #333; }
         .preta { width: 45px; height: 60%; background: #222; color: white; margin-left: -22.5px; margin-right: -22.5px; z-index: 2; border: 1px solid #000; }
         .alvo-amarelo { background: #FFD700 !important; box-shadow: 0 0 20px #FFD700; z-index: 3; }
-        .progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: rgba(0, 0, 0, 0.2); pointer-events: none; }
         
         /* Botões */
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.95); }
-        .btn-menu { width: 220px; padding: 18px; margin: 8px; border-radius: 50px; font-size: 1.1rem; background: #4CAF50; border: 2px solid rgba(255,255,255,0.1); }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; }
+        .btn-menu { width: 220px; padding: 18px; margin: 8px; border-radius: 50px; font-size: 1.1rem; background: #4CAF50; }
         
         /* Cards de Notas */
-        .card-nota { background: #222; border-left: 5px solid #FFD700; padding: 15px; margin-bottom: 15px; width: 100%; border-radius: 5px; text-align: left; }
-        .card-nota h3 { color: #FFD700; margin-bottom: 8px; font-size: 1.1rem; }
-        .card-nota p { color: #ccc; font-family: monospace; font-size: 0.9rem; line-height: 1.6; letter-spacing: 1px; }
-        
-        .creditos { position: absolute; bottom: 10px; right: 10px; color: rgba(255,255,255,0.3); font-size: 11px; z-index: 20; }
+        .card-nota { background: #222; border-left: 5px solid #FFD700; padding: 15px; margin-bottom: 15px; width: 100%; border-radius: 5px; }
+        .card-nota h3 { color: #FFD700; margin-bottom: 10px; font-size: 1.1rem; }
+        .card-nota p { color: #ccc; font-family: monospace; font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px; }
+        .btns-print-row { display: flex; gap: 10px; }
+        .btn-print-azul { background: #2196F3; flex: 1; font-size: 0.7rem; padding: 8px; }
+        .btn-print-vermelho { background: #f44336; flex: 1; font-size: 0.7rem; padding: 8px; }
 
         /* CONFIGURAÇÃO DE IMPRESSÃO */
         @media print {
-            body { background: white !important; overflow: visible !important; }
-            .no-print, #m-p, #t-j, #t-m, .creditos, .btn { display: none !important; }
-            .tela { display: block !important; position: static !important; background: white !important; color: black !important; padding: 0 !important; }
-            .card-nota { background: white !important; border: 1px solid #000 !important; border-left: 10px solid #000 !important; color: black !important; page-break-inside: avoid; margin-bottom: 20px; }
-            .card-nota h3, .card-nota p { color: black !important; }
-            h2 { color: black !important; text-align: center; margin-bottom: 30px; }
+            body { background: white !important; }
+            .no-print, .btn, .btn-menu, #m-p, #t-j, #t-m, #teclado, #painel, .btns-print-row { display: none !important; }
+            .tela { display: block !important; position: static !important; background: white !important; padding: 0 !important; }
+            .card-nota { display: none !important; }
+            .card-nota.imprimir-agora { display: block !important; background: white !important; border: none !important; text-align: center !important; margin-top: 50px; }
+            .card-nota.imprimir-agora h3 { color: black !important; font-size: 26pt !important; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 30px !important; }
+            .card-nota.imprimir-agora.tipo-azul p { font-size: 18pt !important; line-height: 2.2 !important; word-spacing: 12px !important; color: black !important; }
+            .card-nota.imprimir-agora.tipo-vermelho p { font-size: 22pt !important; font-weight: bold !important; line-height: 2.5 !important; word-spacing: 18px !important; text-transform: uppercase; color: black !important; }
         }
     </style>
 </head>
 <body>
 
     <div id="m-p" class="tela ativa">
-        <h1 style="color:#FFD700; margin-bottom:30px; letter-spacing: 2px;">VIRTUAL PIANO+</h1>
+        <h1 style="color:#FFD700; margin-bottom:30px;">VIRTUAL PIANO+</h1>
         <button class="btn-menu" onclick="irJogo()">PLAY</button>
         <button class="btn-menu" style="background:#2196F3;" onclick="irMus()">MÚSICAS</button>
         <button class="btn-menu" style="background:#FFD700; color:#000;" onclick="irNotas()">VER NOTAS</button>
-        <div class="creditos">João Gabriel Morais</div>
     </div>
 
     <div id="t-n" class="tela" style="justify-content: flex-start; overflow-y: auto;">
-        <div style="width: 100%; display: flex; gap: 10px; margin-bottom: 20px;" class="no-print">
-            <button class="btn" style="background:#f44336; flex: 1;" onclick="irMenu()">SAIR</button>
-            <button class="btn" style="background:#2196F3; flex: 1;" onclick="window.print()">IMPRIMIR PARTITURAS</button>
+        <div class="no-print" style="width: 100%; margin-bottom: 20px;">
+            <button class="btn" style="background:#555; width: 100%;" onclick="irMenu()">⬅ VOLTAR AO MENU</button>
         </div>
-        <h2 style="color: white; margin-bottom: 20px;">Minhas Partituras</h2>
         <div id="lista-notas-texto" style="width: 100%;"></div>
     </div>
 
     <div id="t-m" class="tela" style="justify-content:flex-start; overflow-y:auto;">
-        <button class="btn" style="background:#555; margin-bottom:20px; width: 100%;" onclick="irMenu()">⬅ VOLTAR AO MENU</button>
+        <button class="btn" style="background:#555; margin-bottom:20px; width: 100%;" onclick="irMenu()">⬅ VOLTAR</button>
         <div id="lista-m" style="width:100%;"></div>
     </div>
 
@@ -76,18 +74,18 @@
         <div id="painel">
             <div class="linha">
                 <button class="btn" style="background:#f44336;" onclick="irMenu()">SAIR</button>
-                <div style="text-align:center;"><b id="txt-m" style="color:white; font-size:1.1rem;">Livre</b><br><small id="cont-n" style="color:#FFD700;"></small></div>
+                <div style="text-align:center;"><b id="txt-m" style="color:white;">Livre</b></div>
                 <button id="btn-rec" class="btn" style="background:#555;" onclick="toggleRec()">⏺ GRAVAR</button>
             </div>
             <div class="linha">
-                <small style="color:#aaa;">TROM:</small>
-                <input type="range" id="pitch" min="0.1" max="4.0" step="0.1" value="1.0">
-                <b id="val-pitch" style="color:#FFD700; min-width:35px;">1.0</b>
+                <span style="color:white; font-size: 0.8rem;">PITCH:</span>
+                <input type="range" id="pitch" min="0.1" max="4.0" step="0.1" value="1.3">
+                <b id="val-pitch" style="color:#FFD700;">1.3</b>
             </div>
             <div class="linha">
-                <small style="color:#aaa;">VOL:</small>
+                <span style="color:white; font-size: 0.8rem;">VOL:</span>
                 <input type="range" id="vol" min="0" max="1" step="0.1" value="0.5" oninput="mG.gain.value = this.value">
-                <span id="timer" style="color:#FFD700; font-family:monospace; font-weight:bold;">00:00</span>
+                <b id="val-vol" style="color:#FFD700;">50%</b>
             </div>
         </div>
         <div id="teclado"></div>
@@ -95,106 +93,132 @@
 
 <script>
     let ctx, mG, rec, chunks = [], notas = new Map();
-    let mus = null, passo = 0, seg = 0, tTimer, segurando = false, prog = 0, loopProg, aguardandoRitmo = false;
-    
+    let mus = null, passo = 0, segurando = false;
     const nms = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si','Dó2','Dó#2','Ré2','Ré#2','Mi2','Fá2','Fá#2','Sol2','Sol#2','Lá2','Lá#2','Si2','Dó3'];
 
     const banco = [
-        { id: 1, nome: "Harry Potter Theme", pitchBase: 1.0, seq: [[11,250],[-1,50],[16,600],[-1,50],[19,200],[-1,50],[18,200],[-1,50],[16,600],[-1,50],[23,400],[-1,50],[21,800],[-1,150],[18,800],[-1,50],[16,600],[-1,50],[19,200],[-1,50],[18,200],[-1,50],[15,600],[-1,50],[17,400],[-1,50],[11,1000]] },
-        { id: 2, nome: "Bate o Sino", pitchBase: 1.0, seq: [[4,200],[-1,50],[4,200],[-1,50],[4,400],[-1,200],[4,200],[-1,50],[4,200],[-1,50],[4,400],[-1,200],[4,200],[-1,50],[7,200],[-1,50],[0,200],[-1,50],[2,200],[-1,50],[4,800],[-1,100],[5,200],[-1,50],[5,200],[-1,50],[5,200],[-1,50],[5,200],[-1,50],[5,200],[-1,50],[4,200],[-1,50],[4,200],[-1,50],[4,200],[-1,50],[4,200],[-1,50],[7,200],[-1,50],[7,200],[-1,50],[5,200],[-1,50],[2,200],[-1,50],[0,800]] },
-        { id: 3, nome: "Baby Shark", pitchBase: 1.5, seq: [[2,400],[-1,50],[4,400],[-1,50],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[6,600]] },
-        { id: 4, nome: "Parabéns pra Você", pitchBase: 0.9, seq: [[0,200],[-1,50],[0,200],[-1,50],[2,400],[-1,50],[0,400],[-1,50],[5,400],[-1,50],[4,800],[-1,200],[0,200],[-1,50],[0,200],[-1,50],[2,400],[-1,50],[0,400],[-1,50],[7,400],[-1,50],[5,800]] }
+        { id: 1, nome: "Parabéns pra Você (Completa)", pitchBase: 1.2, seq: [
+            // Parabéns pra você
+            [0,300],[0,150],[2,450],[0,450],[5,450],[4,900],[-1,300],
+            // Nesta data querida
+            [0,300],[0,150],[2,450],[0,450],[7,450],[5,900],[-1,300],
+            // Muitas felicidades
+            [0,300],[0,150],[12,450],[9,450],[5,450],[4,450],[2,900],[-1,300],
+            // Muitos anos de vida
+            [10,300],[10,150],[9,450],[5,450],[7,450],[5,900]
+        ]},
+        { id: 2, nome: "Bate o Sino (Completa)", pitchBase: 1.3, seq: [
+            [4,300],[4,300],[4,600],[-1,100],[4,300],[4,300],[4,600],[-1,100],
+            [4,300],[7,300],[0,300],[2,300],[4,800],[-1,200],
+            [5,300],[5,300],[5,300],[5,300],[5,300],[4,300],[4,300],
+            [4,300],[2,300],[2,300],[4,300],[2,600],[7,600],[-1,200],
+            [4,300],[4,300],[4,600],[-1,100],[4,300],[4,300],[4,600],[-1,100],
+            [4,300],[7,300],[0,300],[2,300],[4,800],[-1,200],
+            [5,300],[5,300],[5,300],[5,300],[5,300],[4,400],[4,400],
+            [7,300],[7,300],[5,300],[2,300],[0,800]
+        ]},
+        { id: 3, nome: "Baby Shark", pitchBase: 1.6, seq: [[2,400],[-1,50],[4,400],[-1,50],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[6,600]] },
+        { id: 4, nome: "Harry Potter Theme", pitchBase: 1.3, seq: [[11,250],[-1,50],[16,600],[-1,50],[19,200],[-1,50],[18,200],[-1,50],[16,600],[-1,50],[23,400],[-1,50],[21,800],[-1,150],[18,800],[-1,50],[16,600],[-1,50],[19,200],[-1,50],[18,200],[-1,50],[15,600],[-1,50],[17,400],[-1,50],[11,1000]] }
     ];
 
-    function init() {
-        if(!ctx) {
-            ctx = new (window.AudioContext || window.webkitAudioContext)();
-            mG = ctx.createGain(); mG.gain.value = 0.5; mG.connect(ctx.destination);
-            let dest = ctx.createMediaStreamDestination(); mG.connect(dest);
-            rec = new MediaRecorder(dest.stream);
-            rec.ondataavailable = e => chunks.push(e.data);
-            rec.onstop = () => {
-                let b = new Blob(chunks, {type:'audio/webm'});
-                let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'meu_piano.webm'; a.click();
-            };
-        }
+    function init() { 
+        if(!ctx) { 
+            ctx = new (window.AudioContext || window.webkitAudioContext)(); 
+            mG = ctx.createGain(); 
+            mG.gain.value = 0.5; 
+            mG.connect(ctx.destination); 
+            let dest = ctx.createMediaStreamDestination(); 
+            mG.connect(dest); 
+            rec = new MediaRecorder(dest.stream); 
+            rec.ondataavailable = e => chunks.push(e.data); 
+            rec.onstop = () => { 
+                let b = new Blob(chunks, {type:'audio/webm'}); 
+                let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'piano.webm'; a.click(); 
+            }; 
+        } 
     }
-
-    function irMenu() { clearInterval(loopProg); clearInterval(tTimer); document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('m-p').classList.add('ativa'); }
-    function irJogo() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); init(); mus = null; document.getElementById('txt-m').innerText = "Livre"; document.getElementById('cont-n').innerText = ""; }
-    function irMus() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-m').classList.add('ativa'); const l = document.getElementById('lista-m'); l.innerHTML = ''; banco.forEach(m => { l.innerHTML += `<div style="background:#222; margin-bottom:10px; padding:15px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; color:white;"><span>${m.nome}</span> <button class="btn" style="background:#FFD700; color:#000;" onclick="playM(${m.id})">TOCAR</button></div>`; }); }
+    
+    function irMenu() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('m-p').classList.add('ativa'); }
+    function irJogo() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); init(); mus = null; document.getElementById('txt-m').innerText = "Livre"; }
+    
+    function irMus() { 
+        document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); 
+        document.getElementById('t-m').classList.add('ativa'); 
+        const l = document.getElementById('lista-m'); l.innerHTML = ''; 
+        banco.forEach(m => { 
+            l.innerHTML += `<div style="background:#222; margin-bottom:10px; padding:15px; border-radius:12px; display:flex; justify-content:space-between; color:white;"><span>${m.nome}</span> <button class="btn" style="background:#FFD700; color:#000;" onclick="playM(${m.id})">PLAY</button></div>`; 
+        }); 
+    }
     
     function irNotas() {
         document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-n').classList.add('ativa');
         const c = document.getElementById('lista-notas-texto'); c.innerHTML = '';
-        banco.forEach(m => {
+        banco.forEach((m, idx) => {
             let s = m.seq.filter(n => n[0] !== -1).map(n => nms[n[0]]).join(" - ");
-            c.innerHTML += `<div class="card-nota"><h3>${m.nome}</h3><p>${s}</p></div>`;
+            c.innerHTML += `<div class="card-nota" id="card-${idx}"><h3>${m.nome}</h3><p>${s}</p><div class="btns-print-row"><button class="btn btn-print-azul" onclick="imprimir('card-${idx}', 'azul')">🎼 PARTITURA</button><button class="btn btn-print-vermelho" onclick="imprimir('card-${idx}', 'vermelho')">🎹 DÓ-RÉ-MÍ</button></div></div>`;
         });
     }
 
-    function playM(id) {
-        mus = banco.find(m => m.id === id); passo = 0; seg = 0;
-        document.getElementById('pitch').value = mus.pitchBase; document.getElementById('val-pitch').innerText = mus.pitchBase.toFixed(1);
-        document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa');
-        init(); document.getElementById('txt-m').innerText = mus.nome;
-        clearInterval(tTimer); tTimer = setInterval(() => { seg++; let m=Math.floor(seg/60).toString().padStart(2,'0'), s=(seg%60).toString().padStart(2,'0'); document.getElementById('timer').innerText=m+':'+s; }, 1000);
-        prox();
+    function imprimir(id, tipo) { document.querySelectorAll('.card-nota').forEach(c => c.classList.remove('imprimir-agora', 'tipo-azul', 'tipo-vermelho')); document.getElementById(id).classList.add('imprimir-agora', 'tipo-' + tipo); window.print(); }
+    
+    function playM(id) { 
+        mus = banco.find(m => m.id === id); passo = 0; 
+        document.getElementById('pitch').value = mus.pitchBase; 
+        document.getElementById('val-pitch').innerText = mus.pitchBase.toFixed(1); 
+        document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); 
+        document.getElementById('t-j').classList.add('ativa'); 
+        init(); document.getElementById('txt-m').innerText = mus.nome; 
+        prox(); 
     }
 
-    function prox() {
-        document.querySelectorAll('.tecla').forEach(t => { t.classList.remove('alvo-amarelo'); if(t.querySelector('.progress-bar')) t.querySelector('.progress-bar').style.height = '0%'; });
-        if(mus && passo >= mus.seq.length) { alert("Parabéns! Música Completa."); irMenu(); return; }
-        if(mus) {
-            let n = mus.seq[passo][0];
-            if(n === -1) { aguardandoRitmo = true; setTimeout(() => { passo++; prox(); }, mus.seq[passo][1]); } 
-            else { document.getElementById('k'+n).classList.add('alvo-amarelo'); aguardandoRitmo = false; let tTotal = mus.seq.filter(x=>x[0]!==-1).length; let pAtual = mus.seq.slice(0,passo).filter(x=>x[0]!==-1).length+1; document.getElementById('cont-n').innerText = `Nota ${pAtual}/${tTotal}`; }
-        }
+    function prox() { 
+        document.querySelectorAll('.tecla').forEach(t => t.classList.remove('alvo-amarelo')); 
+        if(mus && passo >= mus.seq.length) { alert("Fim da Música!"); irMenu(); return; } 
+        if(mus) { 
+            let n = mus.seq[passo][0]; 
+            if(n === -1) { setTimeout(() => { passo++; prox(); }, mus.seq[passo][1]); } 
+            else { document.getElementById('k'+n).classList.add('alvo-amarelo'); } 
+        } 
     }
 
-    function handleStart(id, f) {
-        if(aguardandoRitmo) return;
-        init(); som(f * document.getElementById('pitch').value, id);
-        if(mus && id === 'k'+mus.seq[passo][0]) {
-            segurando = true; prog = 0; clearInterval(loopProg);
-            loopProg = setInterval(() => { prog += 50; let p = (prog / mus.seq[passo][1]) * 100; let el = document.getElementById(id); if(el && el.querySelector('.progress-bar')) el.querySelector('.progress-bar').style.height = Math.min(p, 100) + '%'; }, 50);
-        }
-    }
-
-    function handleEnd(id) { off(id); if(mus && segurando && id === 'k'+mus.seq[passo][0]) { aguardandoRitmo = true; passo++; prox(); } segurando = false; clearInterval(loopProg); }
-
-    function toggleRec() { init(); const b = document.getElementById('btn-rec'); if(rec.state === 'inactive') { chunks = []; rec.start(); b.innerText = "⏹ PARAR"; b.style.background = "#f44336"; } else { rec.stop(); b.innerText = "⏺ GRAVAR"; b.style.background = "#555"; } }
+    function handleStart(id, f) { init(); som(f * document.getElementById('pitch').value, id); if(mus && id === 'k'+mus.seq[passo][0]) segurando = true; }
+    function handleEnd(id) { off(id); if(mus && segurando && id === 'k'+mus.seq[passo][0]) { passo++; prox(); } segurando = false; }
+    
+    function toggleRec() { init(); const b = document.getElementById('btn-rec'); if(rec.state === 'inactive') { chunks = []; rec.start(); b.innerText = "⏹ PARAR"; } else { rec.stop(); b.innerText = "⏺ GRAVAR"; } }
 
     const tcl = document.getElementById('teclado');
     for(let i=0; i<25; i++) {
         let div = document.createElement('div'), f = 130.81 * Math.pow(2, i/12), id = 'k'+i;
         div.className = 'tecla ' + (nms[i%12].includes('#') ? 'preta' : 'branca'); div.id = id;
-        div.innerHTML = `<div class="progress-bar"></div><small style="pointer-events:none; font-size:9px; font-weight:bold;">${nms[i]}</small>`;
+        div.innerHTML = `<small style="pointer-events:none;">${nms[i]}</small>`;
         div.onpointerdown = (e) => { div.setPointerCapture(e.pointerId); handleStart(id, f); };
         div.onpointerup = (e) => handleEnd(id); tcl.appendChild(div);
     }
-
+    
     function som(f, id) { 
         if(!ctx || notas.has(id)) return; 
-        document.getElementById(id).style.filter = "brightness(0.7)"; 
         let o = ctx.createOscillator(), g = ctx.createGain(); 
-        o.type = 'triangle'; o.frequency.value = f; 
+        o.type = 'triangle'; 
+        o.frequency.value = f; 
         g.gain.setValueAtTime(0, ctx.currentTime); 
-        g.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02); // Início suave
-        o.connect(g); g.connect(mG); o.start(); notas.set(id, {o, g}); 
+        g.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02); 
+        o.connect(g); g.connect(mG); o.start(); 
+        notas.set(id, {o, g}); 
     }
 
     function off(id) { 
         let n = notas.get(id); 
         if(n) { 
-            document.getElementById(id).style.filter = "none"; 
-            n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1); // Final suave (sem chiado)
-            n.o.stop(ctx.currentTime + 0.15); notas.delete(id); 
+            n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1); 
+            n.o.stop(ctx.currentTime + 0.12); 
+            notas.delete(id); 
         } 
     }
 
-    document.getElementById('pitch').oninput = function() { document.getElementById('val-pitch').innerText = parseFloat(this.value).toFixed(1); };
+    document.getElementById('vol').addEventListener('input', (e) => {
+        document.getElementById('val-vol').innerText = Math.round(e.target.value * 100) + "%";
+    });
 </script>
 </body>
     </html>
-        
+            
