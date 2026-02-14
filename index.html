@@ -35,19 +35,18 @@
         .btn-menu { width: 220px; padding: 18px; margin: 8px; border-radius: 50px; font-size: 1.1rem; background: #4CAF50; }
         .creditos { position: absolute; bottom: 15px; right: 15px; color: #FFD700; font-size: 0.8rem; font-weight: bold; }
 
-        .card-nota { background: #222; border-left: 5px solid #FFD700; padding: 15px; margin-bottom: 15px; width: 100%; border-radius: 5px; }
+        .card-nota { background: #222; border-left: 5px solid #FFD700; padding: 15px; margin-bottom: 15px; width: 100%; border-radius: 5px; text-align: left; }
         .btns-print-row { display: flex; gap: 10px; margin-top: 10px; }
         .btn-p-azul { background: #2196F3; flex: 1; font-size: 0.7rem; }
         .btn-p-vermelho { background: #f44336; flex: 1; font-size: 0.7rem; }
         
         @media print {
-            .no-print, .btn, .btn-menu, #m-p, #t-j, #t-m, #teclado, #painel, .creditos, #container-progresso, .btns-print-row { display: none !important; }
-            .tela { display: block !important; position: static !important; background: white !important; }
+            .no-print, .btn, .btn-menu, #m-p, #t-j, #t-m, #t-n, #teclado, #painel, .creditos, #container-progresso, .btns-print-row { display: none !important; }
+            .tela { display: block !important; position: static !important; background: white !important; padding: 0; }
             .card-nota { display: none !important; }
-            .card-nota.imprimir-agora { display: block !important; text-align: center; border: none; }
-            .card-nota.imprimir-agora h3 { color: black !important; font-size: 24pt; }
-            .card-nota.imprimir-agora.tipo-azul p { font-size: 18pt; color: black !important; }
-            .card-nota.imprimir-agora.tipo-vermelho p { font-size: 26pt; font-weight: bold; color: black !important; text-transform: uppercase; }
+            .card-nota.imprimir-agora { display: block !important; text-align: center; border: none; background: white; width: 100%; }
+            .card-nota.imprimir-agora h3 { color: black !important; font-size: 28pt; margin-bottom: 20px; }
+            .card-nota.imprimir-agora p { color: black !important; font-size: 22pt; word-spacing: 15px; line-height: 2; }
         }
     </style>
 </head>
@@ -106,13 +105,18 @@
     ];
 
     function init() { if(!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); mG = ctx.createGain(); mG.gain.value = 0.5; mG.connect(ctx.destination); let dest = ctx.createMediaStreamDestination(); mG.connect(dest); rec = new MediaRecorder(dest.stream); rec.ondataavailable = e => chunks.push(e.data); rec.onstop = () => { let b = new Blob(chunks, {type:'audio/webm'}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'piano.webm'; a.click(); }; } }
+    
     function irMenu() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('m-p').classList.add('ativa'); }
-    function irJogo() { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); document.getElementById('container-progresso').style.display = 'none'; init(); mus = null; document.getElementById('txt-m').innerText = "Modo Livre"; }
+    
+    function irJogo() { 
+        document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); 
+        document.getElementById('container-progresso').style.display = 'none'; init(); mus = null; document.getElementById('txt-m').innerText = "Modo Livre"; 
+    }
     
     function irMus() { 
         document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById('t-m').classList.add('ativa');
         const l = document.getElementById('lista-m'); l.innerHTML = ''; 
-        banco.forEach(m => { l.innerHTML += `<div style="background:#222; margin-bottom:10px; padding:15px; border-radius:12px; display:flex; justify-content:space-between; color:white;"><span>${m.nome}</span> <button class="btn" style="background:#FFD700; color:#000;" onclick="playM(${m.id})">PLAY</button></div>`; });
+        banco.forEach(m => { l.innerHTML += `<div style="background:#222; margin-bottom:10px; padding:15px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; color:white;"><span>${m.nome}</span> <button class="btn" style="background:#FFD700; color:#000;" onclick="playM(${m.id})">PLAY</button></div>`; });
     }
 
     function irNotas() {
@@ -120,11 +124,15 @@
         const c = document.getElementById('lista-notas-texto'); c.innerHTML = '';
         banco.forEach((m, idx) => {
             let s = m.seq.filter(n => n[0] !== -1).map(n => nms[n[0]]).join(" - ");
-            c.innerHTML += `<div class="card-nota" id="card-${idx}"><h3>${m.nome}</h3><p style="color:#ccc;">${s}</p><div class="btns-print-row"><button class="btn btn-p-azul" onclick="imprimir('card-${idx}', 'azul')">🎼 PARTITURA</button><button class="btn btn-p-vermelho" onclick="imprimir('card-${idx}', 'vermelho')">🎹 DÓ-RÉ-MÍ</button></div></div>`;
+            c.innerHTML += `<div class="card-nota" id="card-${idx}"><h3>${m.nome}</h3><p style="color:#ccc; font-family:monospace;">${s}</p><div class="btns-print-row"><button class="btn btn-p-azul" onclick="imprimir('card-${idx}', 'azul')">🎼 PARTITURA</button><button class="btn btn-p-vermelho" onclick="imprimir('card-${idx}', 'vermelho')">🎹 DÓ-RÉ-MÍ</button></div></div>`;
         });
     }
 
-    function imprimir(id, tipo) { document.querySelectorAll('.card-nota').forEach(c => c.classList.remove('imprimir-agora', 'tipo-azul', 'tipo-vermelho')); document.getElementById(id).classList.add('imprimir-agora', 'tipo-' + tipo); window.print(); }
+    function imprimir(id, tipo) { 
+        document.querySelectorAll('.card-nota').forEach(c => c.classList.remove('imprimir-agora', 'tipo-azul', 'tipo-vermelho')); 
+        document.getElementById(id).classList.add('imprimir-agora', 'tipo-' + tipo); 
+        setTimeout(() => { window.print(); }, 500);
+    }
 
     function playM(id) { 
         mus = banco.find(m => m.id === id); passo = 0; 
@@ -142,7 +150,7 @@
             let pct = (passo / mus.seq.length) * 100;
             document.getElementById('barra-progresso').style.width = pct + '%';
             if(passo >= mus.seq.length) { 
-                alert("Música Concluída! Entrando no Modo Livre..."); 
+                alert("Música Concluída! Você agora está no Modo Livre."); 
                 mus = null; document.getElementById('container-progresso').style.display = 'none';
                 document.getElementById('txt-m').innerText = "Modo Livre";
                 return; 
@@ -186,5 +194,4 @@
     document.getElementById('pitch').oninput = (e) => { document.getElementById('val-pitch').innerText = parseFloat(e.target.value).toFixed(1); };
 </script>
 </body>
-    </html>
-            
+</html>
