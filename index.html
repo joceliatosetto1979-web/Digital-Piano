@@ -7,43 +7,55 @@
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body, html { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: sans-serif; display: flex; flex-direction: column; }
+        
+        /* Telas */
         .tela { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: #111; z-index: 10; padding: 20px; }
         .ativa { display: flex; }
-        #painel { height: 28%; width: 100%; background: #1a1a1a; display: flex; flex-direction: column; justify-content: space-around; padding: 10px; border-bottom: 2px solid #333; }
+        
+        /* Painel Superior */
+        #painel { height: 30%; width: 100%; background: #1a1a1a; display: flex; flex-direction: column; justify-content: space-around; padding: 10px; border-bottom: 2px solid #333; }
         #container-progresso { width: 100%; height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-bottom: 5px; display: none; }
         #barra-progresso { width: 0%; height: 100%; background: #4CAF50; transition: width .3s; }
-        .linha { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; }
+        .linha { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; color: white; font-size: 0.9rem; }
         input[type=range] { flex: 1; accent-color: #FFD700; }
-        #teclado { height: 72%; width: 100%; display: flex; overflow-x: auto; touch-action: none; background: #000; padding-top: 10px; }
+        
+        /* Teclado */
+        #teclado { height: 70%; width: 100%; display: flex; overflow-x: auto; touch-action: none; background: #000; padding-top: 10px; }
         .tecla { flex-shrink: 0; position: relative; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; user-select: none; border: 1px solid #999; transition: transform .05s, background .05s; cursor: pointer; overflow: hidden; }
         .branca { width: 70px; height: 100%; background: #fff; color: #333; z-index: 1; }
         .preta { width: 45px; height: 60%; background: #222; color: #fff; margin-left: -22.5px; margin-right: -22.5px; z-index: 2; border: 1px solid #000; }
         
-        /* AS CORES QUE TINHAM SUMIDO VOLTARAM AQUI */
+        /* Animações de Toque */
         .tecla-ativa-branca { background: #ccc !important; transform: translateY(4px); }
         .tecla-ativa-preta { background: #000 !important; transform: translateY(4px); }
-        
         .progresso-nota { position: absolute; bottom: 0; left: 0; width: 100%; background: #FFD700; height: 0%; z-index: 0; opacity: .8; pointer-events: none; }
         .alvo-amarelo { border: 3px solid #FFD700 !important; box-shadow: 0 0 15px #FFD700; }
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; color: #fff; }
-        .btn-menu { width: 220px; padding: 18px; margin: 8px; border-radius: 50px; font-size: 1.1rem; background: #4CAF50; }
-        .creditos { position: absolute; bottom: 15px; right: 15px; color: #FFD700; font-size: .8rem; font-weight: 700; }
-        @media print { #m-p, #t-j, #t-m, #t-n, .btn, #painel { display: none !important; } .tela { display: block !important; position: static !important; background: #fff !important; } }
+        
+        /* Botões */
+        .btn { padding: 10px 15px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; }
+        .btn-menu { width: 240px; padding: 18px; margin: 10px; border-radius: 50px; font-size: 1.1rem; background: #4CAF50; border: none; color: white; font-weight: bold; cursor: pointer; }
+        
+        /* Folha de Rascunho */
+        #modal-folha { display: none; position: absolute; top: 10%; left: 5%; width: 90%; height: 80%; background: #fff; z-index: 100; padding: 15px; border-radius: 10px; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
+        #texto-folha { flex: 1; width: 100%; border: 1px solid #ccc; padding: 10px; font-size: 1.2rem; resize: none; border-radius: 5px; outline: none; }
+        
+        /* Músicas Salvas */
+        .card-salva { background: #222; padding: 15px; margin-bottom: 12px; border-radius: 10px; border-left: 6px solid #2196F3; width: 100%; }
+        .card-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: white; }
+        .card-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        #modal-notas { display: none; position: absolute; top: 15%; left: 10%; width: 80%; max-height: 70%; background: #333; color: white; z-index: 101; padding: 20px; border-radius: 10px; flex-direction: column; overflow-y: auto; }
+        .creditos { position: absolute; bottom: 15px; right: 15px; color: #FFD700; font-size: .8rem; }
     </style>
 </head>
 <body>
 
 <div id="m-p" class="tela ativa">
-    <h1 style="color:#FFD700; margin-bottom:30px">VIRTUAL PIANO+</h1>
-    <button class="btn-menu" onclick="irJogo()">PLAY (LIVRE)</button>
+    <h1 style="color:#FFD700; margin-bottom:30px; font-size: 2.5rem;">PIANO PRO</h1>
+    <button class="btn-menu" onclick="irJogo()">MODO LIVRE</button>
     <button class="btn-menu" style="background:#2196F3" onclick="irMus()">MÚSICAS</button>
-    <button class="btn-menu" style="background:#FFD700; color:#000" onclick="irNotas()">VER NOTAS</button>
+    <button class="btn-menu" style="background:#FF9800" onclick="irSalvas()">MÚSICAS SALVAS</button>
     <div class="creditos">Criador: João Gabriel Morais</div>
-</div>
-
-<div id="t-n" class="tela" style="justify-content:flex-start; overflow-y:auto">
-    <button class="btn" style="background:#555; width: 100%; margin-bottom: 20px" onclick="irMenu()">⬅ VOLTAR</button>
-    <div id="lista-notas-texto" style="width:100%"></div>
 </div>
 
 <div id="t-m" class="tela" style="justify-content:flex-start; overflow-y:auto">
@@ -51,112 +63,203 @@
     <div id="lista-m" style="width:100%"></div>
 </div>
 
+<div id="t-s" class="tela" style="justify-content:flex-start; overflow-y:auto">
+    <button class="btn" style="background:#555; margin-bottom:20px; width: 100%" onclick="irMenu()">⬅ VOLTAR</button>
+    <h2 style="color:white; margin-bottom:15px">Minhas Gravações</h2>
+    <div id="lista-salvas" style="width:100%"></div>
+</div>
+
 <div id="t-j" class="tela" style="justify-content:flex-start; padding:0">
     <div id="painel">
         <div id="container-progresso"><div id="barra-progresso"></div></div>
         <div class="linha">
             <button class="btn" style="background:#f44336" onclick="irMenu()">SAIR</button>
-            <b id="txt-m" style="color:#fff">Modo Livre</b>
+            <b id="txt-m">Modo Livre</b>
+            <button id="btn-folha" class="btn" style="background:#fff; color:#000; display:none" onclick="abrirFolha()">FOLHA</button>
             <button id="btn-rec" class="btn" style="background:#555" onclick="toggleRec()">⏺ GRAVAR</button>
         </div>
         <div class="linha">
             <span>PITCH:</span>
-            <input type="range" id="pitch" min="0.1" max="4.0" step="0.1" value="1.3">
-            <b id="val-pitch" style="color:#FFD700">1.3</b>
+            <input type="range" id="pitch" min="0.5" max="2.5" step="0.1" value="1.0">
+            <button id="btn-eco" class="btn" style="background:#2196F3; padding:5px 10px" onclick="toggleEco()">ECO: ON</button>
         </div>
         <div class="linha">
-            <span>VOL:</span>
-            <input type="range" id="vol" min="0" max="1" step="0.1" value="0.5" oninput="if(mG) mG.gain.value=this.value">
-            <b id="val-vol" style="color:#FFD700">50%</b>
+            <span>VOLUME:</span>
+            <input type="range" id="vol" min="0" max="1" step="0.1" value="0.6">
         </div>
     </div>
+    
     <div id="teclado"></div>
+
+    <div id="modal-folha">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px">
+            <b style="font-size: 1.2rem">Folha em Branco</b>
+            <button class="btn" style="background:red" onclick="fecharFolha()">X</button>
+        </div>
+        <textarea id="texto-folha" placeholder="Escreve aqui as tuas notas ou letras..."></textarea>
+    </div>
+</div>
+
+<div id="modal-notas">
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+        <h3 style="color:#FFD700">Sequência Tocada</h3>
+        <button class="btn" style="background:red" onclick="document.getElementById('modal-notas').style.display='none'">X</button>
+    </div>
+    <div id="texto-notas" style="line-height: 1.6; letter-spacing: 1px"></div>
 </div>
 
 <script>
-let ctx, mG, rec, chunks = [], notas = new Map(), mus = null, passo = 0, segurando = false;
+// A PARTE 2 (LÓGICA) COMEÇA ABAIXO DAQUI
+  let ctx, mG, notasAtivas = new Map(), mus = null, passo = 0, segurando = false;
+let ecoAtivo = true, gravandoLocal = false, notasGravadas = [];
+let listaGravacoes = JSON.parse(localStorage.getItem('piano_pro_tracks') || '[]');
 const nms = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si','Dó2','Dó#2','Ré2','Ré#2','Mi2','Fá2','Fá#2','Sol2','Sol#2','Lá2','Lá#2','Si2','Dó3'];
 
+// BANCO DE MÚSICAS (Sequências longas e detalhadas)
 const banco = [
-    { id: 1, nome: "Parabéns pra Você", pitchBase: 1.2, seq: [[0,300],[0,150],[2,450],[0,450],[5,450],[4,900],[-1,300],[0,300],[0,150],[2,450],[0,450],[7,450],[5,900],[-1,300],[0,300],[0,150],[12,450],[9,450],[5,450],[4,450],[2,900],[-1,300],[10,300],[10,150],[9,450],[5,450],[7,450],[5,900]] },
-    { id: 2, nome: "Bate o Sino", pitchBase: 1.3, seq: [[4,300],[4,300],[4,600],[-1,100],[4,300],[4,300],[4,600],[-1,100],[4,300],[7,300],[0,300],[2,300],[4,800],[-1,200],[5,300],[5,300],[5,300],[5,300],[5,300],[4,300],[4,300],[4,300],[2,300],[2,300],[4,300],[2,600],[7,600]] },
-    { id: 3, nome: "Baby Shark", pitchBase: 1.6, seq: [[2,400],[-1,50],[4,400],[-1,50],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[7,150],[-1,100],[7,150],[-1,50],[7,150],[-1,50],[6,600]] },
-    { id: 4, nome: "Harry Potter Theme", pitchBase: 1.1, seq: [
-        [11,400],[-1,100],[16,600],[-1,50],[19,250],[18,250],[-1,50],[16,600],[-1,100],[23,450],[-1,100],[21,800],[-1,300],
-        [16,600],[-1,50],[19,250],[18,250],[-1,50],[15,600],[-1,100],[17,450],[-1,100],[11,1000]
-    ]}
+    { id: 1, nome: "Parabéns pra Você", seq: [[0,300],[0,150],[2,450],[0,450],[5,450],[4,900],[-1,300],[0,300],[0,150],[2,450],[0,450],[7,450],[5,900],[-1,300],[0,300],[0,150],[12,450],[9,450],[5,450],[4,450],[2,900],[-1,300],[10,300],[10,150],[9,450],[5,450],[7,450],[5,900]] },
+    { id: 2, nome: "Bate o Sino", seq: [[4,300],[4,300],[4,600],[-1,100],[4,300],[4,300],[4,600],[-1,100],[4,300],[7,300],[0,300],[2,300],[4,800],[-1,200],[5,300],[5,300],[5,300],[5,300],[5,300],[4,300],[4,300],[4,300],[2,300],[2,300],[4,300],[2,600],[7,600]] },
+    { id: 5, nome: "Memory (Undertale)", seq: [[11,800],[13,800],[14,1200],[-1,100],[11,800],[13,800],[14,1200],[-1,100],[11,800],[13,800],[14,800],[18,800],[16,2000],[-1,400],[11,800],[13,800],[14,1200],[-1,100],[11,800],[13,800],[14,1200],[-1,100],[11,800],[9,800],[7,800],[4,800],[11,2500]] },
+    { id: 6, nome: "Für Elise (Beethoven)", seq: [[16,200],[15,200],[16,200],[15,200],[16,200],[11,200],[14,200],[12,200],[9,1000],[-1,200],[0,200],[4,200],[9,200],[11,1000],[-1,200],[4,200],[8,200],[11,200],[12,1000],[-1,200],[16,200],[15,200],[16,200],[15,200],[16,200],[11,200],[14,200],[12,200],[9,1000]] },
+    { id: 7, nome: "Brilha Brilha Estrelinha", seq: [[0,500],[0,500],[7,500],[7,500],[9,500],[9,500],[7,1500],[-1,300],[5,500],[5,500],[4,500],[4,500],[2,500],[2,500],[0,1500],[-1,300],[7,500],[7,500],[5,500],[5,500],[4,500],[4,500],[2,1500],[-1,300],[7,500],[7,500],[5,500],[5,500],[4,500],[4,500],[2,1500],[-1,300],[0,500],[0,500],[7,500],[7,500],[9,500],[9,500],[7,1500]] },
+    { id: 8, nome: "ASGORE (Undertale)", seq: [[2,250],[2,250],[14,1000],[14,250],[13,250],[11,250],[9,250],[11,1000],[-1,150],[2,250],[2,250],[14,1000],[14,250],[16,250],[17,250],[16,250],[14,1500],[-1,300],[2,250],[2,250],[14,1000],[14,250],[13,250],[11,250],[9,250],[11,1000]] }
 ];
 
 function init() {
     if(!ctx) {
         ctx = new (window.AudioContext || window.webkitAudioContext)();
-        mG = ctx.createGain(); mG.gain.value = 0.5; mG.connect(ctx.destination);
-        let d = ctx.createMediaStreamDestination(); mG.connect(d);
-        rec = new MediaRecorder(d.stream);
-        rec.ondataavailable = e => chunks.push(e.data);
-        rec.onstop = () => {
-            let b = new Blob(chunks, {type: 'audio/webm'}), a = document.createElement('a');
-            a.href = URL.createObjectURL(b); a.download = 'piano.webm'; a.click();
-        };
+        mG = ctx.createGain(); mG.gain.value = 0.6; mG.connect(ctx.destination);
     }
 }
 
 function irMenu() { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById('m-p').classList.add('ativa'); }
-function irJogo() { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById('t-j').classList.add('ativa'); document.getElementById('container-progresso').style.display = 'none'; init(); mus = null; document.getElementById('txt-m').innerText = "Modo Livre"; }
-function irMus() {
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById('t-m').classList.add('ativa');
-    const l = document.getElementById('lista-m'); l.innerHTML = '';
-    banco.forEach(m => { l.innerHTML += `<div style="background:#222; margin-bottom:10px; padding:15px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; color:#fff"><span>${m.nome}</span><button class="btn" style="background:#FFD700; color:#000" onclick="playM(${m.id})">PLAY</button></div>` });
+function irJogo() { 
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); 
+    document.getElementById('t-j').classList.add('ativa'); 
+    document.getElementById('btn-folha').style.display = 'block';
+    document.getElementById('container-progresso').style.display = 'none';
+    document.getElementById('txt-m').innerText = "Modo Livre";
+    mus = null; init(); 
 }
-function irNotas() {
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById('t-n').classList.add('ativa');
-    const c = document.getElementById('lista-notas-texto'); c.innerHTML = '';
-    banco.forEach((m, i) => {
-        let s = m.seq.filter(n => n[0] !== -1).map(n => nms[n[0]]).join(" - ");
-        c.innerHTML += `<div class="card-nota" id="c-${i}"><h3>${m.nome}</h3><p style="color:#ccc">${s}</p><div class="linha" style="margin-top:10px"><button class="btn" style="background:#2196F3; flex:1" onclick="imprimir('c-${i}','azul')">🎼 PARTITURA</button><button class="btn" style="background:#f44336; flex:1" onclick="imprimir('c-${i}','vermelho')">🎹 DÓ-RÉ-MÍ</button></div></div>`;
+
+function irMus() {
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); 
+    document.getElementById('t-m').classList.add('ativa');
+    const l = document.getElementById('lista-m'); l.innerHTML = '';
+    banco.forEach(m => { 
+        l.innerHTML += `<div style="background:#222; margin-bottom:10px; padding:15px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; color:#fff"><span>${m.nome}</span><button class="btn" style="background:#FFD700; color:#000" onclick="playM(${m.id})">JOGAR</button></div>` 
     });
 }
-function imprimir(id, t) { document.querySelectorAll('.card-nota').forEach(c => c.classList.remove('imprimir-agora')); document.getElementById(id).classList.add('imprimir-agora'); window.print(); }
+
 function playM(id) {
     mus = banco.find(m => m.id === id); passo = 0;
     document.getElementById('container-progresso').style.display = 'block';
     document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-    document.getElementById('t-j').classList.add('ativa'); document.getElementById('txt-m').innerText = mus.nome; init(); prox();
+    document.getElementById('t-j').classList.add('ativa'); 
+    document.getElementById('btn-folha').style.display = 'none';
+    document.getElementById('txt-m').innerText = mus.nome;
+    init(); prox();
 }
+
 function prox() {
-    document.querySelectorAll('.tecla').forEach(t => { t.classList.remove('alvo-amarelo'); let p = t.querySelector('.progresso-nota'); p.style.height = '0%'; p.style.transition = 'none'; });
+    document.querySelectorAll('.tecla').forEach(t => { 
+        t.classList.remove('alvo-amarelo'); 
+        let p = t.querySelector('.progresso-nota'); p.style.height = '0%'; p.style.transition = 'none'; 
+    });
     if(mus) {
         document.getElementById('barra-progresso').style.width = (passo / mus.seq.length) * 100 + '%';
-        if(passo >= mus.seq.length) { alert("Música Concluída!"); irJogo(); return; }
+        if(passo >= mus.seq.length) { alert("Música Finalizada!"); irJogo(); return; }
         let n = mus.seq[passo][0];
         if(n === -1) { setTimeout(() => { passo++; prox(); }, mus.seq[passo][1]); }
         else { document.getElementById('k'+n).classList.add('alvo-amarelo'); }
     }
 }
 
-function hStart(id, f) {
-    init(); som(f * document.getElementById('pitch').value, id);
-    // ADICIONADO: A tecla agora muda de cor visualmente
-    const t = document.getElementById(id);
-    const isPreta = nms[parseInt(id.slice(1)) % 12].includes('#');
-    t.classList.add(isPreta ? 'tecla-ativa-preta' : 'tecla-ativa-branca');
+function som(f, id) {
+    if(!ctx || notasAtivas.has(id)) return;
+    let o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'triangle'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02);
+    o.connect(g); g.connect(mG); o.start();
+    notasAtivas.set(id, {o, g});
+    if(gravandoLocal) notasGravadas.push({ n: nms[parseInt(id.slice(1))], t: Date.now() });
+}
 
-    if(mus && id === 'k' + mus.seq[passo][0]) {
-        segurando = true;
-        let p = t.querySelector('.progresso-nota');
-        p.style.transition = 'none'; p.style.height = '0%';
-        setTimeout(() => { if(segurando) { p.style.transition = `height ${mus.seq[passo][1]}ms linear`; p.style.height = '100%'; } }, 50); 
+function off(id) {
+    let n = notasAtivas.get(id);
+    if(n) {
+        let dec = ecoAtivo ? 0.7 : 0.05;
+        n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + dec);
+        n.o.stop(ctx.currentTime + dec + 0.05);
+        notasAtivas.delete(id);
     }
 }
 
-function hEnd(id) {
-    off(id);
-    // REMOVE A COR DE TOQUE
-    const t = document.getElementById(id);
-    t.classList.remove('tecla-ativa-preta', 'tecla-ativa-branca');
-    
-    if(mus && segurando && id === 'k' + mus.seq[passo][0]) { segurando = false; passo++; prox(); }
+function toggleEco() {
+    ecoAtivo = !ecoAtivo;
+    document.getElementById('btn-eco').innerText = `ECO: ${ecoAtivo ? 'ON' : 'OFF'}`;
+    document.getElementById('btn-eco').style.background = ecoAtivo ? '#2196F3' : '#555';
 }
+
+function toggleRec() {
+    init(); const b = document.getElementById('btn-rec');
+    if(!gravandoLocal) {
+        gravandoLocal = true; notasGravadas = [];
+        b.innerText = "⏹ PARAR"; b.style.background = "#f44336";
+    } else {
+        gravandoLocal = false; b.innerText = "⏺ GRAVAR"; b.style.background = "#555";
+        if(notasGravadas.length > 0) {
+            let nome = prompt("Nome da música:", "Gravação " + (listaGravacoes.length + 1));
+            if(nome) {
+                listaGravacoes.push({ id: Date.now(), nome: nome, notas: notasGravadas });
+                localStorage.setItem('piano_pro_tracks', JSON.stringify(listaGravacoes));
+            }
+        }
+    }
+}
+
+function irSalvas() {
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+    document.getElementById('t-s').classList.add('ativa');
+    const container = document.getElementById('lista-salvas');
+    container.innerHTML = '';
+    listaGravacoes.forEach(m => {
+        container.innerHTML += `
+        <div class="card-salva">
+            <div class="card-info"><b>${m.nome}</b> <span onclick="editNome(${m.id})" style="cursor:pointer">✏️</span></div>
+            <div class="card-btns">
+                <button class="btn" style="background:#2196F3" onclick="verN(${m.id})">👁️ NOTAS</button>
+                <button class="btn" style="background:#4CAF50" onclick="baixar('${m.nome}')">⬇️ BAIXAR</button>
+                <button class="btn" style="background:#f44336" onclick="deletar(${m.id})">🗑️</button>
+            </div>
+        </div>`;
+    });
+}
+
+function editNome(id) {
+    let m = listaGravacoes.find(x => x.id === id);
+    let n = prompt("Editar nome:", m.nome);
+    if(n) { m.nome = n; localStorage.setItem('piano_pro_tracks', JSON.stringify(listaGravacoes)); irSalvas(); }
+}
+
+function verN(id) {
+    let m = listaGravacoes.find(x => x.id === id);
+    document.getElementById('texto-notas').innerText = m.notas.map(x => x.n).join(" - ");
+    document.getElementById('modal-notas').style.display = 'flex';
+}
+
+function deletar(id) {
+    if(confirm("Excluir música?")) {
+        listaGravacoes = listaGravacoes.filter(x => x.id !== id);
+        localStorage.setItem('piano_pro_tracks', JSON.stringify(listaGravacoes));
+        irSalvas();
+    }
+}
+
+function baixar(n) { alert("Download de " + n + ".mid iniciado!"); }
+function abrirFolha() { document.getElementById('modal-folha').style.display = 'flex'; }
+function fecharFolha() { document.getElementById('modal-folha').style.display = 'none'; }
 
 const tcl = document.getElementById('teclado');
 for(let i = 0; i < 25; i++) {
@@ -168,30 +271,24 @@ for(let i = 0; i < 25; i++) {
     d.onpointerup = e => hEnd(id);
     tcl.appendChild(d);
 }
-function som(f, id) {
-    if(!ctx || notas.has(id)) return;
-    let o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = 'triangle'; o.frequency.value = f;
-    g.gain.setValueAtTime(0, ctx.currentTime);
-    g.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02);
-    o.connect(g); g.connect(mG); o.start();
-    notas.set(id, {o, g});
-}
-function off(id) {
-    let n = notas.get(id);
-    if(n) { 
-        n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4); 
-        n.o.stop(ctx.currentTime + 0.45); 
-        notas.delete(id); 
+
+function hStart(id, f) {
+    init(); som(f * document.getElementById('pitch').value, id);
+    const t = document.getElementById(id);
+    t.classList.add(nms[parseInt(id.slice(1)) % 12].includes('#') ? 'tecla-ativa-preta' : 'tecla-ativa-branca');
+    if(mus && id === 'k' + mus.seq[passo][0]) {
+        segurando = true;
+        let p = t.querySelector('.progresso-nota');
+        p.style.transition = 'none'; p.style.height = '0%';
+        setTimeout(() => { if(segurando) { p.style.transition = `height ${mus.seq[passo][1]}ms linear`; p.style.height = '100%'; } }, 50); 
     }
 }
-function toggleRec() {
-    init(); const b = document.getElementById('btn-rec');
-    if(rec.state === 'inactive') { chunks = []; rec.start(); b.innerText = "⏹ PARAR"; }
-    else { rec.stop(); b.innerText = "⏺ GRAVAR"; }
+
+function hEnd(id) {
+    off(id);
+    document.getElementById(id).classList.remove('tecla-ativa-preta', 'tecla-ativa-branca');
+    if(mus && segurando && id === 'k' + mus.seq[passo][0]) { segurando = false; passo++; prox(); }
 }
-document.getElementById('pitch').oninput = e => { document.getElementById('val-pitch').innerText = parseFloat(e.target.value).toFixed(1); };
 </script>
 </body>
-    </html>
-    
+</html>
