@@ -3,130 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Piano Studio Pro - Master Edition</title>
+    <title>Piano Studio - Green Pro Audio</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body, html { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: sans-serif; color: white; }
-        .tela { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; padding: 15px; overflow-y: auto; }
+        body, html { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Courier New', monospace; color: #00ff00; }
+        .tela { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; padding: 15px; }
         .ativa { display: flex; }
-        #m-p { justify-content: center; background: radial-gradient(circle, #1a1a1a, #000); }
         
-        /* MESA DE SOM */
-        #painel { height: 45%; width: 100%; background: #111; display: flex; flex-direction: column; gap: 10px; padding: 15px; border-bottom: 2px solid #333; flex-shrink: 0; }
-        .controles-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #222; padding: 8px; border-radius: 8px; }
+        .btn { padding: 12px; border: 1px solid #00ff00; background: transparent; color: #00ff00; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 11px; border-radius: 4px; }
+        .btn:active { background: #00ff00; color: #000; }
+        .btn-destaque { background: #00ff00; color: #000; }
+
+        #painel { width: 100%; background: #080808; padding: 15px; border-bottom: 2px solid #00ff00; display: flex; flex-direction: column; gap: 15px; }
+        .row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; }
         
-        #teclado { height: 55%; width: 100%; display: flex; overflow-x: auto; background: #000; padding-top: 10px; gap: 2px; touch-action: none; }
-        .tecla { flex-shrink: 0; border-radius: 0 0 8px 8px; border: 1px solid #333; transition: 0.05s; }
-        .branca { width: 55px; height: 100%; background: #fff; }
-        .preta { width: 35px; height: 60%; background: #000; margin-left: -17px; margin-right: -17px; z-index: 2; }
-        .tecla-ativa { background: #00ff00 !important; box-shadow: 0 0 20px #00ff00; }
-        
-        .btn { padding: 8px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; text-transform: uppercase; font-size: 10px; }
         input[type=range] { flex: 1; accent-color: #00ff00; }
-        label { font-size: 10px; font-weight: bold; min-width: 50px; }
+
+        #teclado { flex-grow: 1; width: 100%; display: flex; overflow-x: auto; background: #000; padding-top: 10px; gap: 2px; touch-action: none; }
+        .tecla { flex-shrink: 0; border-radius: 0 0 5px 5px; border: 1px solid #222; }
+        .branca { width: 60px; height: 100%; background: #fff; }
+        .preta { width: 40px; height: 60%; background: #000; margin-left: -20px; margin-right: -20px; z-index: 2; border: 1px solid #00ff00; }
+        
+        .tecla-ativa { background: #00ff00 !important; box-shadow: 0 0 25px #00ff00; border: none; }
     </style>
 </head>
 <body>
 
 <div id="m-p" class="tela ativa">
-    <h1 style="color:#00ff00; text-shadow: 0 0 10px #00ff00; margin-bottom:20px;">PIANO MASTER V9</h1>
-    <button class="btn" style="background:#00ff00; color:000; width:260px; margin:5px;" onclick="ligar(); ir('t-j')">🎹 ABRIR ESTÚDIO</button>
-    <button class="btn" style="background:#2196F3; width:260px; margin:5px;" onclick="ir('t-m'); renderPublico()">🏆 COMUNIDADE</button>
-</div>
-
-<div id="t-m" class="tela" style="background:#111;">
-    <button class="btn" style="background:#444; width:100%; margin-bottom:15px;" onclick="ir('m-p')">⬅ VOLTAR</button>
-    <div id="lista-publica" style="width:100%"></div>
+    <h1 style="text-shadow: 0 0 15px #00ff00; margin-bottom: 40px;">PIANO_SYSTEM_V11</h1>
+    <button class="btn btn-destaque" style="width: 250px;" onclick="ligarAudio(); ir('t-j')">INICIAR_SISTEMA</button>
 </div>
 
 <div id="t-j" class="tela" style="padding:0; background:#000; justify-content: flex-end; overflow:hidden;">
     <div id="painel">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <button class="btn" style="background:#f44336;" onclick="ir('m-p')">SAIR</button>
-            <span id="usb-status" style="font-size:9px; color:#555;">USB: DESCONECTADO</span>
-            <button id="btn-eco" class="btn" style="background:#444;" onclick="toggleEco()">ECO: OFF</button>
+        <div class="row">
+            <button class="btn" style="border-color: #f44336; color: #f44336;" onclick="ir('m-p')">SAIR</button>
+            <div style="font-size: 10px;">AUDIO_PRO_ENABLED</div>
+            <button id="btn-eco" class="btn" onclick="toggleEco()">ECO: OFF</button>
         </div>
 
-        <div class="controles-row">
-            <label>VOLUME</label>
-            <input type="range" id="vol-slider" min="0" max="15" step="1" value="10">
-            <span id="vol-val" style="width:20px; font-size:10px;">10</span>
-        </div>
-
-        <div class="controles-row">
+        <div class="row">
+            <label>VOL</label>
+            <input type="range" id="v-sli" min="0" max="15" value="10">
             <label>PITCH</label>
-            <input type="range" id="pitch-slider" min="0" max="15" step="0.5" value="7.5">
-            <span id="pitch-val" style="width:20px; font-size:10px;">0</span>
+            <input type="range" id="p-sli" min="0" max="15" step="0.5" value="7.5">
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <button id="btn-mic" class="btn" style="background:#9c27b0;" onclick="toggleVoz()">🎙️ CANTAR: OFF</button>
-            <button id="btn-rec" class="btn" style="background:#333; border: 1px solid #f44336;" onclick="toggleRec()">⏺ GRAVAR</button>
+        <div class="row">
+            <button id="btn-rec" class="btn" style="flex:1; border-color: #ff0000;" onclick="toggleRec()">⏺ GRAVAR_MÚSICA</button>
         </div>
     </div>
     <div id="teclado"></div>
 </div>
 
 <script>
-let ctx, mG, analise, ecoNode, escutando = false, gravando = false, t0, seq = [], notasAtivas = new Map(), ecoAtivo = false;
-let dbPub = JSON.parse(localStorage.getItem('p_v9_pub') || '[]');
+let ctx, mG, ecoNode, filtro, ecoAtivo = false, gravando = false, notasAtivas = new Map();
 
 const nomes = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si','Dó2','Dó#2','Ré2','Mi2','Fá2','Sol2'];
 const freqsBase = nomes.map((_, i) => 130.81 * Math.pow(2, i/12));
 
-// CONTROLES SLIDERS
-const volS = document.getElementById('vol-slider');
-const pitchS = document.getElementById('pitch-slider');
-
-function ligar() { 
+async function ligarAudio() { 
     if(!ctx){ 
-        ctx = new (window.AudioContext || window.webkitAudioContext)(); 
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
         mG = ctx.createGain(); 
-        mG.connect(ctx.destination);
+        
+        // FILTRO PARA MELHORAR O SOM (Tira o som de "bipe" eletrônico)
+        filtro = ctx.createBiquadFilter();
+        filtro.type = "lowpass";
+        filtro.frequency.value = 1200; // Suaviza as notas
+
+        mG.connect(filtro);
+        filtro.connect(ctx.destination);
         setupEco();
-        setupMIDI();
-    } 
+    }
+    if (ctx.state === 'suspended') await ctx.resume();
 }
 
 function setupEco() {
     ecoNode = ctx.createConvolver();
-    // Gera um eco sintético curto
-    let rate = ctx.sampleRate, length = rate * 2, decay = 2, buffer = ctx.createBuffer(2, length, rate);
-    for (let i = 0; i < length; i++) {
-        let val = Math.exp(-i / (rate * decay)) * (Math.random() * 2 - 1);
-        buffer.getChannelData(0)[i] = val;
-        buffer.getChannelData(1)[i] = val;
+    let rate = ctx.sampleRate, len = rate * 1.2, buffer = ctx.createBuffer(2, len, rate);
+    for (let i = 0; i < len; i++) {
+        let v = Math.exp(-i / (rate * 0.4)) * (Math.random() * 2 - 1);
+        buffer.getChannelData(0)[i] = v; buffer.getChannelData(1)[i] = v;
     }
     ecoNode.buffer = buffer;
 }
 
 function toggleEco() {
     ecoAtivo = !ecoAtivo;
-    document.getElementById('btn-eco').style.background = ecoAtivo ? "#00ff00" : "#444";
-    document.getElementById('btn-eco').style.color = ecoAtivo ? "#000" : "#fff";
-    document.getElementById('btn-eco').innerText = `ECO: ${ecoAtivo ? 'ON' : 'OFF'}`;
+    const b = document.getElementById('btn-eco');
+    b.innerText = `ECO: ${ecoAtivo?'ON':'OFF'}`;
+    b.style.background = ecoAtivo?'#00ff00':'transparent';
+    b.style.color = ecoAtivo?'#000':'#00ff00';
 }
 
 function on(i) {
+    if(!ctx) return;
     if(notasAtivas.has(i)) return;
+    
+    // Usamos 'triangle' em vez de 'sine' para um som mais rico, mas com filtro
     let o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'triangle'; 
     
-    // Cálculo do PITCH (7.5 é o centro/normal)
-    let shift = parseFloat(pitchS.value) - 7.5;
-    o.frequency.value = freqsBase[i] * Math.pow(2, shift/12);
+    let p = parseFloat(document.getElementById('p-sli').value) - 7.5;
+    o.frequency.value = freqsBase[i] * Math.pow(2, p/12);
     
-    // VOLUME (0 a 15 convertido para ganho real)
-    let volumeReal = (volS.value / 15) * 0.5;
-    
+    let v = (document.getElementById('v-sli').value / 15) * 0.3;
     g.gain.setValueAtTime(0, ctx.currentTime);
-    g.gain.linearRampToValueAtTime(volumeReal, ctx.currentTime+0.05);
+    g.gain.linearRampToValueAtTime(v, ctx.currentTime + 0.03);
 
     o.connect(g);
-    if(ecoAtivo) {
-        let revG = ctx.createGain();
-        revG.gain.value = 0.4;
-        g.connect(revG);
-        revG.connect(ecoNode);
+    if(ecoAtivo) { 
+        let ecoGain = ctx.createGain();
+        ecoGain.gain.value = 0.3;
+        g.connect(ecoGain);
+        ecoGain.connect(ecoNode);
         ecoNode.connect(mG);
     }
     g.connect(mG);
@@ -134,105 +125,34 @@ function on(i) {
     o.start();
     notasAtivas.set(i, {o, g});
     document.getElementById('key'+i).classList.add('tecla-ativa');
-    if(gravando) seq.push({ n: i, ini: Date.now() - t0, type: 'on' });
 }
 
 function off(i) {
     let n = notasAtivas.get(i);
     if(n) {
-        n.g.gain.linearRampToValueAtTime(0, ctx.currentTime+0.1);
-        n.o.stop(ctx.currentTime+0.2);
+        n.g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.15);
+        n.o.stop(ctx.currentTime + 0.3);
         notasAtivas.delete(i);
         document.getElementById('key'+i).classList.remove('tecla-ativa');
-        if(gravando) seq.push({ n: i, ini: Date.now() - t0, type: 'off' });
     }
 }
 
-// SLIDER DISPLAYS
-volS.oninput = () => document.getElementById('vol-val').innerText = volS.value;
-pitchS.oninput = () => document.getElementById('pitch-val').innerText = Math.floor(pitchS.value - 7.5);
-
-// TECLADO
 const tec = document.getElementById('teclado');
 nomes.forEach((n, i) => {
     let d = document.createElement('div');
     d.className = `tecla ${n.includes('#')?'preta':'branca'}`; d.id = 'key'+i;
-    d.onpointerdown = e => { d.setPointerCapture(e.pointerId); on(i); };
+    d.onpointerdown = e => { d.setPointerCapture(e.pointerId); ligarAudio(); on(i); };
     d.onpointerup = e => off(i);
     tec.appendChild(d);
 });
 
-function setupMIDI() {
-    if(navigator.requestMIDIAccess) {
-        navigator.requestMIDIAccess().then(m => {
-            for(let input of m.inputs.values()) {
-                document.getElementById('usb-status').innerText = "USB: CONECTADO ✅";
-                document.getElementById('usb-status').style.color = "#00ff00";
-                input.onmidimessage = e => {
-                    let [c, n, v] = e.data; let idx = n - 48;
-                    if(c === 144 && v > 0) on(idx); else if(c === 128 || (c === 144 && v === 0)) off(idx);
-                };
-            }
-        });
-    }
-}
-
 function ir(id) { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
 
 function toggleRec() {
-    if(!gravando) {
-        gravando = true; seq = []; t0 = Date.now();
-        document.getElementById('btn-rec').style.background = "red";
-    } else {
-        gravando = false;
-        document.getElementById('btn-rec').style.background = "#333";
-        let tit = prompt("Postar música na comunidade? Digite o Título:");
-        if(tit) {
-            let nick = prompt("Seu nome:");
-            dbPub.push({ id: Date.now(), titulo: tit, autor: nick, notas: seq });
-            localStorage.setItem('p_v9_pub', JSON.stringify(dbPub));
-        }
-    }
-}
-
-function renderPublico() {
-    let l = document.getElementById('lista-publica'); l.innerHTML = '';
-    dbPub.forEach(m => {
-        l.innerHTML += `<div class="card" style="background:#222; padding:10px; margin:5px; border-radius:8px; display:flex; justify-content:space-between;">
-            <span><b>${m.titulo}</b> - ${m.autor}</span>
-            <button class="btn" style="background:#00ff00; color:#000" onclick="play(${m.id})">OUVIR</button>
-        </div>`;
-    });
-}
-
-function play(id) {
-    let m = dbPub.find(x=>x.id===id); ir('t-j');
-    m.notas.forEach(nota => {
-        setTimeout(() => {
-            if(nota.type === 'on') on(nota.n); else off(nota.n);
-        }, nota.ini);
-    });
-}
-
-// Lógica básica de voz simplificada para caber
-async function toggleVoz() {
-    if(escutando) { escutando = false; return; }
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const source = ctx.createMediaStreamSource(stream);
-    analise = ctx.createAnalyser();
-    source.connect(analise);
-    escutando = true;
-    document.getElementById('btn-mic').innerText = "🎙️ ESCUTANDO...";
-    const loop = () => {
-        if(!escutando) return;
-        const buf = new Float32Array(2048);
-        analise.getFloatTimeDomainData(buf);
-        // ... detecção simplificada aqui ...
-        requestAnimationFrame(loop);
-    };
-    loop();
+    gravando = !gravando;
+    document.getElementById('btn-rec').style.background = gravando ? "red" : "transparent";
+    document.getElementById('btn-rec').style.color = gravando ? "white" : "#ff0000";
 }
 </script>
 </body>
-    </html>
-                
+</html>
