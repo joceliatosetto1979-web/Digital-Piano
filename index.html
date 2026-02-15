@@ -1,105 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Piano Virtual BR</title>
-    
-    <link rel="apple-touch-icon" href="https://googleusercontent.com/image_generation_content/4">
-    <link rel="icon" href="https://googleusercontent.com/image_generation_content/4">
-
-    <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body, html { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: sans-serif; display: flex; flex-direction: column; }
-        
-        .tela { position: absolute; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; padding: 20px; }
-        .ativa { display: flex; }
-
-        /* MENU INICIAL (Imagem Neon Anterior de Fundo) */
-        #m-p { 
-            background-image: url('https://googleusercontent.com/image_generation_content/3'); 
-            background-size: cover; 
-            background-position: center;
-            position: relative;
-        }
-        #m-p::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); z-index: 1;
-        }
-        #m-p * { z-index: 2; }
-
-        #painel { height: 38%; width: 100%; background: #111; display: flex; flex-direction: column; justify-content: space-around; padding: 10px; border-bottom: 2px solid #00ff0033; position: relative; }
-        
-        /* Oitavas Coloridas */
-        .oitava-1 { background: rgba(144, 238, 144, 0.1) !important; border: 1px solid rgba(144, 238, 144, 0.2) !important; }
-        .oitava-2 { background: rgba(0, 100, 0, 0.15) !important; border: 1px solid rgba(0, 100, 0, 0.3) !important; }
-        
-        #teclado { height: 62%; width: 100%; display: flex; overflow-x: auto; touch-action: none; background: #000; padding-top: 10px; gap: 2px; }
-        .tecla { flex-shrink: 0; position: relative; border-radius: 0 0 8px 8px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 15px; user-select: none; transition: all 0.1s; cursor: pointer; overflow: hidden; }
-        .branca { width: 65px; height: 100%; color: #fff; z-index: 1; border: 1px solid #333; }
-        .preta { width: 40px; height: 60%; background: #000; color: #fff; margin-left: -20px; margin-right: -20px; z-index: 2; border: 1px solid #444; }
-        
-        .tecla-ativa-branca { background: #00ff00 !important; transform: translateY(5px); box-shadow: 0 0 30px #00ff00, inset 0 0 10px #fff; }
-        .tecla-ativa-preta { background: #008000 !important; transform: translateY(5px); box-shadow: 0 0 25px #008000; }
-        .alvo-amarelo { border: 3px solid #ffff00 !important; box-shadow: 0 0 20px #ffff00 !important; animation: pulsar 0.8s infinite alternate; }
-        @keyframes pulsar { from { opacity: 0.7; } to { opacity: 1; border-width: 5px; } }
-
-        .progresso-nota { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 0, 0.7); height: 0%; z-index: 0; pointer-events: none; }
-        #container-progresso { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; display: none; }
-        #barra-progresso { width: 0%; height: 100%; background: #00ff00; transition: width .3s; }
-        
-        .linha { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; color: white; font-size: 0.7rem; }
-        input[type=range] { flex: 1; accent-color: #00ff00; }
-        
-        .btn { padding: 12px 20px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; color: #fff; font-size: 0.75rem; transition: 0.2s; text-transform: uppercase; }
-        .btn-menu { width: 260px; margin: 10px; border: 2px solid rgba(255,255,255,0.2); }
-        #folha { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 20; display: none; flex-direction: column; }
-        #txt-folha { flex: 1; padding: 15px; border: none; resize: none; font-size: 1rem; outline: none; }
-    </style>
-</head>
-<body>
-
-<div id="m-p" class="tela ativa">
-    <h1 style="color:#00ff00; text-shadow: 0 0 15px #00ff00; margin-bottom:30px; font-size: 2rem; text-align: center;">PIANO VIRTUAL BR</h1>
-    <button class="btn btn-menu" style="background:rgba(0, 255, 0, 0.3); border-color: #00ff00;" onclick="ligarTudo(); irJogo();">MODO LIVRE</button>
-    <button class="btn btn-menu" style="background:rgba(33, 150, 243, 0.3); border-color: #2196F3;" onclick="irMus()">MÚSICAS COMPLETAS</button>
-    <button class="btn btn-menu" style="background:rgba(255, 152, 0, 0.3); border-color: #FF9800;" onclick="irSalvas()">GRAVAÇÕES</button>
-</div>
-
-<div id="t-m" class="tela" style="background: #111;">
-    <button class="btn" style="background:#444; margin-bottom:20px; width: 100%" onclick="irMenu()">⬅ VOLTAR</button>
-    <div id="lista-m" style="width:100%"></div>
-</div>
-
-<div id="t-j" class="tela" style="padding:0; background: #000;">
-    <div id="painel">
-        <div id="folha">
-            <div style="display:flex; justify-content:space-between; background:#eee; padding:5px;"><b style="color:#000">RASCUNHO</b><button class="btn" style="background:red; padding: 5px 10px;" onclick="document.getElementById('folha').style.display='none'">X</button></div>
-            <textarea id="txt-folha" oninput="localStorage.setItem('piano_txt', this.value)"></textarea>
-        </div>
-        <div id="container-progresso"><div id="barra-progresso"></div></div>
-        <div class="linha">
-            <button class="btn" style="background:#f44336; padding: 5px 10px;" onclick="irMenu()">SAIR</button>
-            <b id="txt-m" style="color:#00ff00">LIVRE</b>
-            <button class="btn" style="background:#fff; color:#000; padding: 5px 10px;" onclick="document.getElementById('folha').style.display='flex'">📝 FOLHA</button>
-            <button id="btn-rec" class="btn" style="background:#555; padding: 5px 10px;" onclick="toggleRec()">⏺ REC</button>
-        </div>
-        <div class="linha"><span>PITCH:</span><input type="range" id="pitch" min="0.5" max="2.0" step="0.1" value="1.0"><span>VOL:</span><input type="range" id="vol" min="0" max="1" step="0.1" value="0.6"></div>
-        <div class="linha">
-            <button class="btn" style="background:#2196F3; flex:1" onclick="ecoAtivo=!ecoAtivo; this.innerText=ecoAtivo?'ECO: ON':'ECO: OFF'">ECO: ON</button>
-            <button id="btn-usb" class="btn" style="background:#673AB7; flex:1" onclick="ativarUSB()">USB: OFF</button>
-            <button id="btn-mic" class="btn" style="background:#E91E63; flex:1" onclick="ativarMic()">MIC: OFF</button>
-        </div>
-    </div>
-    <div id="teclado"></div>
-</div>
-
-<div id="t-s" class="tela" style="background: #111;">
-    <button class="btn" style="background:#444; margin-bottom:20px; width: 100%" onclick="irMenu()">⬅ VOLTAR</button>
-    <div id="lista-salvas" style="width:100%"></div>
-</div>
-
-<script>
 let ctx, mG, notasAtivas = new Map(), mus = null, passo = 0, segurando = false, ecoAtivo = true;
 let gravando = false, recorder, chunks = [], listaS = JSON.parse(localStorage.getItem('p_v12') || '[]');
 const nms = ['Dó','Dó#','Ré','Ré#','Mi','Fá','Fá#','Sol','Sol#','Lá','Lá#','Si','Dó2','Dó#2','Ré2','Ré#2','Mi2','Fá2','Fá#2','Sol2','Sol#2','Lá2','Lá#2','Si2','Dó3'];
@@ -152,10 +50,10 @@ for(let i = 0; i < 25; i++) {
 function hStart(id, f) {
     ligarTudo(); som(f, id);
     let el = document.getElementById(id);
-    el.classList.add(nms[parseInt(id.slice(1))%12].includes('#')?'tecla-ativa-preta':'tecla-ativa-branca');
+    if(el) el.classList.add(nms[parseInt(id.slice(1))%12].includes('#')?'tecla-ativa-preta':'tecla-ativa-branca');
     if(mus && id === 'k'+mus.seq[passo][0]) {
         segurando = true; let p = el.querySelector('.progresso-nota');
-        p.style.transition = `height ${mus.seq[passo][1]}ms linear`; p.style.height = '100%';
+        if(p) { p.style.transition = `height ${mus.seq[passo][1]}ms linear`; p.style.height = '100%'; }
     }
 }
 
@@ -177,9 +75,99 @@ function prox() { document.querySelectorAll('.tecla').forEach(t => { t.classList
 async function ouvir(id) { ligarTudo(); let m = banco.find(x => x.id === id); for(let n of m.seq) { if(n[0] !== -1) { som(130.81 * Math.pow(2, n[0]/12), 'tmp'); setTimeout(()=>off('tmp'), n[1]-50); } await new Promise(r => setTimeout(r, n[1])); } }
 function toggleRec() { ligarTudo(); const b = document.getElementById('btn-rec'); if(!gravando){ gravando=true; b.innerText="⏹ PARAR"; b.style.background="red"; recorder.start(); } else { gravando=false; b.innerText="⏺ REC"; b.style.background="#555"; recorder.stop(); } }
 function irSalvas() { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById('t-s').classList.add('ativa'); const c = document.getElementById('lista-salvas'); c.innerHTML = ''; listaS.forEach((m, idx) => { c.innerHTML += `<div style="background:#222; padding:15px; margin-bottom:10px; border-radius:10px; color:white"><b>${m.nome}</b><br><audio controls src="${m.url}" style="width:100%; height:30px; margin:10px 0"></audio><br><button class="btn" style="background:red; padding: 5px 10px;" onclick="listaS.splice(${idx},1); localStorage.setItem('p_v12', JSON.stringify(listaS)); irSalvas()">DEL</button></div>`; }); }
-function ativarUSB() { if(navigator.requestMIDIAccess) navigator.requestMIDIAccess().then(a => { document.getElementById('btn-usb').innerText="USB: ON"; document.getElementById('btn-usb').style.background="#00ff00"; for(let i of a.inputs.values()) i.onmidimessage = m => { const [c,n,v]=m.data; let x=n-48; if(c===144&&v>0) hStart('k'+x, 130.81*Math.pow(2,x/12)); else if(c===128||(c===144&&v===0)) hEnd('k'+x); } }); }
-async function ativarMic() { try{ await navigator.mediaDevices.getUserMedia({audio:true}); document.getElementById('btn-mic').innerText="MIC: ON"; document.getElementById('btn-mic').style.background="#00ff00"; }catch(e){alert("Erro ao acessar microfone.");} }
-</script>
-</body>
-                                                                                                        </html>
-                                                                                                                                          
+
+/* ================== SISTEMA USB MIDI ================== */
+let usbAtivo = false;
+let midiAccess = null;
+
+function ativarUSB() {
+    const btn = document.getElementById('btn-usb');
+    if (usbAtivo) {
+        usbAtivo = false; btn.innerText = "USB: OFF"; btn.style.background = "#673AB7";
+        if (midiAccess) for (let i of midiAccess.inputs.values()) i.onmidimessage = null;
+        return;
+    }
+    if (navigator.requestMIDIAccess) {
+        navigator.requestMIDIAccess().then(a => {
+            midiAccess = a; usbAtivo = true; btn.innerText = "USB: ON"; btn.style.background = "#00ff00";
+            for (let i of a.inputs.values()) {
+                i.onmidimessage = m => {
+                    if (!usbAtivo) return;
+                    const [c, n, v] = m.data; let x = n - 48; // C3 = 48
+                    if (x >= 0 && x < 25) { // Evita erro se tocar nota fora das 25 teclas
+                        if (c === 144 && v > 0) hStart('k' + x, 130.81 * Math.pow(2, x / 12));
+                        else if (c === 128 || (c === 144 && v === 0)) hEnd('k' + x);
+                    }
+                }
+            }
+        }).catch(() => alert("Erro ao acessar MIDI USB."));
+    } else alert("Seu navegador não suporta Web MIDI API.");
+}
+
+/* ================== SISTEMA MICROFONE (PITCH DETECT) ================== */
+let micStream = null, micAnalyser = null, micReqFrame = null, notaAtualMic = -1;
+
+async function ativarMic() {
+    const btn = document.getElementById('btn-mic');
+    if (micStream) {
+        micStream.getTracks().forEach(t => t.stop()); micStream = null; cancelAnimationFrame(micReqFrame);
+        if (notaAtualMic !== -1) { hEnd('k' + notaAtualMic); notaAtualMic = -1; }
+        btn.innerText = "MIC: OFF"; btn.style.background = "#E91E63"; return;
+    }
+    try {
+        await ligarTudo();
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        btn.innerText = "MIC: ON"; btn.style.background = "#00ff00";
+        let source = ctx.createMediaStreamSource(micStream);
+        micAnalyser = ctx.createAnalyser(); micAnalyser.fftSize = 2048;
+        source.connect(micAnalyser); detectarPitch();
+    } catch (e) { alert("Erro ao acessar microfone."); }
+}
+
+// Algoritmo de Autocorrelação para encontrar a frequência exata
+function autoCorrelate(buf, sampleRate) {
+    let SIZE = buf.length; let rms = 0;
+    for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
+    rms = Math.sqrt(rms / SIZE);
+    if (rms < 0.01) return -1; // Volume muito baixo
+    let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+    for (let i = 0; i < SIZE / 2; i++) if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+    for (let i = 1; i < SIZE / 2; i++) if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+    buf = buf.slice(r1, r2); SIZE = buf.length;
+    let c = new Array(SIZE).fill(0);
+    for (let i = 0; i < SIZE; i++) for (let j = 0; j < SIZE - i; j++) c[i] = c[i] + buf[j] * buf[j + i];
+    let d = 0; while (c[d] > c[d + 1]) d++;
+    let maxval = -1, maxpos = -1;
+    for (let i = d; i < SIZE; i++) if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
+    let T0 = maxpos, x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+    let a = (x1 + x3 - 2 * x2) / 2, b = (x3 - x1) / 2;
+    if (a) T0 = T0 - b / (2 * a);
+    return sampleRate / T0;
+}
+
+function detectarPitch() {
+    if (!micStream) return;
+    let buffer = new Float32Array(micAnalyser.fftSize);
+    micAnalyser.getFloatTimeDomainData(buffer);
+    let freq = autoCorrelate(buffer, ctx.sampleRate);
+
+    if (freq !== -1) {
+        // Converte a frequência detectada para o número da nota MIDI
+        let midi = Math.round(12 * (Math.log2(freq / 440)) + 69);
+        let idx = midi - 48; // Mapeia para as nossas 25 teclas (C3 = 48)
+
+        if (idx >= 0 && idx < 25) {
+            if (notaAtualMic !== idx) {
+                if (notaAtualMic !== -1) hEnd('k' + notaAtualMic);
+                notaAtualMic = idx;
+                hStart('k' + idx, 130.81 * Math.pow(2, idx / 12));
+            }
+        } else {
+            if (notaAtualMic !== -1) { hEnd('k' + notaAtualMic); notaAtualMic = -1; }
+        }
+    } else {
+        if (notaAtualMic !== -1) { hEnd('k' + notaAtualMic); notaAtualMic = -1; }
+    }
+    micReqFrame = requestAnimationFrame(detectarPitch);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
